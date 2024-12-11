@@ -1,0 +1,4 @@
+import streamlit as st
+import pandas as pd
+
+st.session_state["df_wealth"]
