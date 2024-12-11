@@ -1,0 +1,8 @@
+pandas
+numpy
+EfficientFrontier
+risk_models
+expected_returns
+plotly.graph_objects 
+matplotlib
+pypfopt
