@@ -6,3 +6,5 @@ expected_returns
 plotly.graph_objects 
 matplotlib
 pypfopt
+streamlit
+io
