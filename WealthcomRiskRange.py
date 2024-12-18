@@ -8,8 +8,18 @@ import matplotlib.pyplot as plt
 from pypfopt import plotting
 import streamlit as st
 
-
 # --- Etapa 1: Ler o arquivo Excel ---
+
+
+st.set_page_config(
+    page_title="Pesos",
+    page_icon="🏃🏼",
+    layout="wide"
+)
+
+
+
+
 try:
     dados = pd.read_excel("DadosBloombergWealth_2022_12_05.xlsx", index_col=0, parse_dates=True)
 except FileNotFoundError:
@@ -26,7 +36,7 @@ retornos = dados.pct_change().dropna()
 #risk_free_rate = float(input("Digite o risk-free rate (em decimal): "))
 #risk_free_rate=0.10
 
-import streamlit as st
+#import streamlit as st
 
 retorno_desejado = st.slider("Qual retorno vc quer?", 0.12 , 0.15, 0.12)
 st.write("Meu retorno desejado é", retorno_desejado, "")
@@ -225,18 +235,64 @@ plt.savefig(buf, format="png")  # Verifique o formato da imagem
 buf.seek(0)  # Redefina o ponteiro novamente
 st.image(buf, caption='Gráfico com Restrições', use_column_width=True)
 
-st.write("Sua Carteira Recomendada é")
-df_pesos = pd.DataFrame(pesos_otimizados_ret, index=[0])
-st.write(pd.DataFrame(df_pesos))
-st.write("Seu Retorno Esperado é")
-st.write(retorno_otimizado_ret)
-st.write("E seu Risco")
-st.write(volatilidade_otimizada_ret)
 
-st.write("Você não prefere a Sugestão Seguinte?")
-df_pesos1 = pd.DataFrame(pesos_otimizados_max, index=[0])
-st.write(pd.DataFrame(df_pesos1))
-st.write("Este seria seu retorno com a Carteira Otimizada Sugerida")
-st.write(retorno_otimizado_max)
-st.write("Este seria seu risco  com a Carteira Otimizada Sugerida")
-st.write(volatilidade_otimizada_max)
+
+
+
+
+
+
+st.header("Sua Carteira Recomendada é")
+df_pesos_otimizados_ret = pd.DataFrame(pesos_otimizados_ret, index=[0])
+col1, col2, col3, col4, col5, col6,col7, col8 = st.columns(8)
+col1.metric(label="Tesouro IPCA 5A", value = "{:.0%}".format(df_pesos_otimizados_ret["IMAB5"].iloc[0]))
+col2.metric(label="Tesouro Pré Curto",value = "{:.0%}".format(df_pesos_otimizados_ret["2Y"].iloc[0]))
+col3.metric(label="Tesouro IPCA Curto", value = "{:.0%}".format(df_pesos_otimizados_ret["IMAB5+"].iloc[0]))
+col4.metric(label="Tesouro Pré  5A", value = "{:.0%}".format(df_pesos_otimizados_ret["5Y"].iloc[0]))
+col5.metric(label="Bolsa", value = "{:.0%}".format(df_pesos_otimizados_ret["IBOV"].iloc[0]))
+col6.metric(label=" Fundo MM", value = "{:.0%}".format(df_pesos_otimizados_ret["IHFA"].iloc[0]))
+col7.metric(label="Fundo Imobiliario", value = "{:.0%}".format(df_pesos_otimizados_ret["IFIX"].iloc[0]))
+col8.metric(label="Dolar", value = "{:.0%}".format(df_pesos_otimizados_ret["IHF"].iloc[0]))
+#st.write(pd.DataFrame(df_pesos))
+#st.write("Seu Retorno Esperado é")
+#st.write(retorno_otimizado_ret)
+#st.write("E seu Risco")
+#st.write(volatilidade_otimizada_ret)
+
+
+col1, col2 = st.columns(2)
+col1.metric(label="Este é o seu Retorno ", value = "{:.2%}".format(retorno_otimizado_ret))
+col2.metric(label="Este é seu Risco ", value = "{:.2%}".format(volatilidade_otimizada_ret))
+
+
+st.divider()
+
+st.header("Você não prefere a Sugestão Seguinte?")
+
+df_pesos_otimizados_max = pd.DataFrame(pesos_otimizados_max, index=[0])
+#st.write(pd.DataFrame(df_pesos1))
+
+col1, col2, col3, col4, col5, col6,col7, col8 = st.columns(8)
+col1.metric(label="Tesouro IPCA 5A", value = "{:.0%}".format(df_pesos_otimizados_max["IMAB5"].iloc[0]))
+col2.metric(label="Tesouro Pré Curto",value = "{:.0%}".format(df_pesos_otimizados_max["2Y"].iloc[0]))
+col3.metric(label="Tesouro IPCA < 5 A", value = "{:.0%}".format(df_pesos_otimizados_max["IMAB5+"].iloc[0]))
+col4.metric(label="Tesouro Pré 5A", value = "{:.0%}".format(df_pesos_otimizados_max["5Y"].iloc[0]))
+col5.metric(label="Bolsa", value = "{:.0%}".format(df_pesos_otimizados_max["IBOV"].iloc[0]))
+col6.metric(label="Fundo MM", value = "{:.0%}".format(df_pesos_otimizados_max["IHFA"].iloc[0]))
+col7.metric(label="Fundo Imob", value = "{:.0%}".format(df_pesos_otimizados_max["IFIX"].iloc[0]))
+col8.metric(label="Dolar", value = "{:.0%}".format(df_pesos_otimizados_max["IHF"].iloc[0]))
+
+#st.header("Este seria seu retorno com a Carteira Otimizada Sugerida")
+#st.subheader(retorno_otimizado_max)
+
+
+col1, col2 = st.columns(2)
+col1.metric(label="Este seria seu Retorno Otimizado", value = "{:.2%}".format(retorno_otimizado_max))
+col2.metric(label="Este seria seu Risco Otimizado", value = "{:.2%}".format(volatilidade_otimizada_max))
+
+#st.header("Este seria seu risco  com a Carteira Otimizada Sugerida")
+#st.subheader(volatilidade_otimizada_max)
+
+
+
+
